@@ -10,8 +10,7 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
         <button
           onClick={() => {
             props.closeModal!();
-          }}
-        >
+          }}>
           Kapat
         </button>
       </div>
@@ -25,10 +24,12 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
           props.openModal!(com(), {
             title: "Heello",
             okText: "Tamam",
-            cancelText: "Vazgeç"
+            cancelText: "Vazgeç",
+            onOk: async () => {
+              props.closeModal!();
+            }
           });
-        }}
-      >
+        }}>
         Open Modal
       </button>
     </div>

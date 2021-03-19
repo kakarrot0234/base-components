@@ -6,13 +6,12 @@ import { IModalOptions } from "../../interfaces/IModalOptions";
 export interface IBaseProps {
   openModal?(content: any, modalOptions?: IModalOptions): void;
   openModalAsync?(content: any, modalOptions?: IModalOptions): Promise<void>;
-  closeModal?(): void;
+  closeModal?(): Promise<void>;
 }
 export interface IBaseState {
   openedModals?: {
     content?: any;
     modalOptions?: IModalOptions;
-    onClosed?(): void;
   }[];
 }
 export function BaseHOC<P>(
@@ -57,18 +56,30 @@ export function BaseHOC<P>(
         }
       });
     }
-    function closeModal() {
+    async function closeModal() {
       const openedModals = [...(state.openedModals || [])];
-      const openedModal = openedModals.pop();
-      if ((openedModal || {}).onClosed) {
-        openedModal!.onClosed!();
+      let permitClose = true;
+      if (openedModals.length > 0) {
+        const openedModal = openedModals[openedModals.length - 1];
+        if ((openedModal.modalOptions || {}).onClosing) {
+          const rspCancelClose = await openedModal.modalOptions!.onClosing!();
+          if (rspCancelClose.cancel) {
+            permitClose = false;
+          }
+        }
+        if (openedModal && permitClose) {
+          openedModals.pop();
+          if (((openedModal || {}).modalOptions || {}).onClosed) {
+            openedModal!.modalOptions!.onClosed!();
+          }
+          setState((previousState) => {
+            return {
+              ...previousState,
+              openedModals
+            };
+          });
+        }
       }
-      setState((previousState) => {
-        return {
-          ...previousState,
-          openedModals
-        };
-      });
     }
 
     return (
@@ -83,11 +94,15 @@ export function BaseHOC<P>(
                 closeModal();
               }}
               onOk={async () => {
-                if ((o.modalOptions || {}).onOk) {
-                  await o.modalOptions!.onOk!();
+                if ((o.modalOptions || {}).isValid) {
+                  const rspIsvalid = await o.modalOptions!.isValid!();
+                  if (rspIsvalid) {
+                    if ((o.modalOptions || {}).onOk) {
+                      await o.modalOptions!.onOk!();
+                    }
+                  }
                 }
-              }}
-            >
+              }}>
               {o.content}
             </Modal>
           );
@@ -100,10 +115,9 @@ export function BaseHOC<P>(
           openModalAsync={async (content, modalOptions) => {
             await openModalAsync(content, modalOptions);
           }}
-          closeModal={() => {
-            closeModal();
-          }}
-        ></WrappedComponent>
+          closeModal={async () => {
+            await closeModal();
+          }}></WrappedComponent>
       </div>
     );
   };
