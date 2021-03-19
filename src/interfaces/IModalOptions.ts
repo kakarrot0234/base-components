@@ -4,4 +4,6 @@ export interface IModalOptions
   extends Pick<
     ModalProps,
     "title" | "cancelText" | "okText" | "okType" | "closeIcon" | "closable"
-  > {}
+  > {
+  onOk?(): Promise<void>;
+}

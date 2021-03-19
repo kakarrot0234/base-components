@@ -18,7 +18,7 @@ export interface IBaseState {
 export function BaseHOC<P>(
   WrappedComponent: React.FunctionComponent<P & IBaseProps>
 ) {
-  const hocComponent = (props: React.PropsWithChildren<P> & IBaseProps) => {
+  const HocComponent = (props: React.PropsWithChildren<P> & IBaseProps) => {
     const [state, setState] = React.useState<IBaseState>({});
 
     function openModal(content: any, modalOptions?: IModalOptions) {
@@ -72,37 +72,40 @@ export function BaseHOC<P>(
     }
 
     return (
-      <WrappedComponent
-        {...props}
-        openModal={(modal, modalOptions) => {
-          openModal(modal, modalOptions);
-        }}
-        openModalAsync={async (content, modalOptions) => {
-          await openModalAsync(content, modalOptions);
-        }}
-        closeModal={() => {
-          closeModal();
-        }}
-      >
-        {props.children}
-        <div>ol</div>
-        <Modal visible={true}>Hello</Modal>
+      <div>
         {(state.openedModals || []).map((o, i) => {
           return (
             <Modal
               key={i}
-              {...o}
+              {...(o.modalOptions || {})}
               visible={true}
               onCancel={() => {
                 closeModal();
+              }}
+              onOk={async () => {
+                if ((o.modalOptions || {}).onOk) {
+                  await o.modalOptions!.onOk!();
+                }
               }}
             >
               {o.content}
             </Modal>
           );
         })}
-      </WrappedComponent>
+        <WrappedComponent
+          {...props}
+          openModal={(modal, modalOptions) => {
+            openModal(modal, modalOptions);
+          }}
+          openModalAsync={async (content, modalOptions) => {
+            await openModalAsync(content, modalOptions);
+          }}
+          closeModal={() => {
+            closeModal();
+          }}
+        ></WrappedComponent>
+      </div>
     );
   };
-  return hocComponent;
+  return HocComponent;
 }

@@ -23,18 +23,13 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
       <button
         onClick={() => {
           props.openModal!(com(), {
-            title: "Heello"
+            title: "Heello",
+            okText: "Tamam",
+            cancelText: "Vazgeç"
           });
         }}
       >
         Open Modal
-      </button>
-      <button
-        onClick={() => {
-          props.closeModal!();
-        }}
-      >
-        Close Modal
       </button>
     </div>
   );
