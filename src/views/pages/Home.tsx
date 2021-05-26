@@ -27,7 +27,7 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
         }}>
         Open Modal
       </button>
-      {veriDeposu.counter}
+      <div>Counter: {veriDeposu.counter}</div>
     </div>
   );
 };

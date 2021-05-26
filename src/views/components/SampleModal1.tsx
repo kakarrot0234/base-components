@@ -1,13 +1,13 @@
-import * as React from "react";
+import { DataStoreContext } from "../../contexts/DataStoreContext";
 import { useMainContext } from "../../hooks/useMainContext";
 import { IBaseProps } from "../../interfaces/IBaseProps";
-import { IVeriDeposu } from "../../interfaces/IVeriDeposu";
+import { BaseHOC } from "./BaseHOC";
 
-export function SampleModal(props: Partial<IBaseProps>) {
-  const [veriDeposu, setVeriDeposu] = useMainContext<IVeriDeposu>();
+const SampleModal1Temp = (props: Partial<IBaseProps>) => {
+  const [veriDeposu, setVeriDeposu] = useMainContext(DataStoreContext);
   return (
     <div>
-      <div>{veriDeposu.counter}</div>
+      <div>{veriDeposu.counter || 0}</div>
       <button
         onClick={() => {
           setVeriDeposu((previousState) => {
@@ -21,4 +21,5 @@ export function SampleModal(props: Partial<IBaseProps>) {
       </button>
     </div>
   );
-}
+};
+export const SampleModal1 = BaseHOC(SampleModal1Temp);
