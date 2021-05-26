@@ -1,22 +1,23 @@
 import * as React from "react";
 import { BaseHOC } from "../components/BaseHOC";
 import { IBaseProps } from "../../interfaces/IBaseProps";
-import { IVeriDeposu } from "../../interfaces/IVeriDeposu";
-import { SampleModal } from "../components/SampleModal";
+import { SampleModal1 } from "../components/SampleModal1";
+import { SampleModal2 } from "../components/SampleModal2";
 import { useMainContext } from "../../hooks/useMainContext";
+import { DataStoreContext } from "../../contexts/DataStoreContext";
 
 export interface IHomeProps extends IBaseProps {}
 const Home: React.FunctionComponent<IHomeProps> = (props) => {
-  const [veriDeposu] = useMainContext<IVeriDeposu>();
+  const [veriDeposu] = useMainContext(DataStoreContext);
 
   return (
     <div>
       <button
         onClick={async () => {
-          await props.openModal!(<SampleModal {...props}></SampleModal>, {
-            title: "Heello",
-            okText: "Tamam",
-            cancelText: "Vazgeç",
+          await props.openModal!(<SampleModal1 {...props}></SampleModal1>, {
+            title: "Title",
+            okText: "Ok",
+            cancelText: "Cancel",
             onOk: async () => {
               props.closeModal!();
             },
@@ -25,7 +26,23 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
             }
           });
         }}>
-        Open Modal
+        Open Modal (without context)
+      </button>
+      <button
+        onClick={async () => {
+          await props.openModal!(<SampleModal2 {...props}></SampleModal2>, {
+            title: "Title",
+            okText: "Ok",
+            cancelText: "Cancel",
+            onOk: async () => {
+              props.closeModal!();
+            },
+            onCancel: async () => {
+              props.closeModal!();
+            }
+          });
+        }}>
+        Open Modal (with context)
       </button>
       <div>Counter: {veriDeposu.counter}</div>
     </div>
@@ -33,5 +50,9 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
 };
 
 export default BaseHOC(Home, {
-  mainContextInit: { counter: 1 } as IVeriDeposu
+  mainContext: DataStoreContext,
+  mainContextInit: {
+    store: {},
+    setStore: () => {}
+  }
 });

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { MainContext } from "../contexts/MainContext";
+import { IMainContext } from "../interfaces/IMainContext";
 
 export function useMainContext<T>(
-  contextId?: string
+  context: React.Context<IMainContext<T>>
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
-  const [mainStore, setMainStore] = React.useContext(MainContext);
-  return [mainStore, setMainStore];
+  const { store, setStore } = React.useContext(context);
+  return [store, setStore];
 }

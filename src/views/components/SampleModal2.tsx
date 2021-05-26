@@ -1,16 +1,32 @@
+import { DataStoreContext } from "../../contexts/DataStoreContext";
 import { AnotherDataStoreContext } from "../../contexts/AnotherDataStoreContext";
 import { useMainContext } from "../../hooks/useMainContext";
 import { IBaseProps } from "../../interfaces/IBaseProps";
 import { BaseHOC } from "./BaseHOC";
 
 const SampleModal2Temp = (props: Partial<IBaseProps>) => {
-  const [veriDeposu, setVeriDeposu] = useMainContext(AnotherDataStoreContext);
+  const [selfDataStore, setSelfDataStore] = useMainContext(
+    AnotherDataStoreContext
+  );
+  const [mainDataStore, setMainDataStore] = useMainContext(DataStoreContext);
   return (
     <div>
-      <div>{veriDeposu.counter || 0}</div>
+      <div>Self Counter: {selfDataStore.counter || 0}</div>
       <button
         onClick={() => {
-          setVeriDeposu((previousState) => {
+          setSelfDataStore((previousState) => {
+            return {
+              ...previousState,
+              counter: (previousState.counter || 0) + 1
+            };
+          });
+        }}>
+        Add + 1
+      </button>
+      <div>Main Counter: {mainDataStore.counter || 0}</div>
+      <button
+        onClick={() => {
+          setMainDataStore((previousState) => {
             return {
               ...previousState,
               counter: (previousState.counter || 0) + 1
