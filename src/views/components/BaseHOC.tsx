@@ -64,8 +64,8 @@ export function BaseHOC<P>(
         });
       }
     });
-    return (
-      <MainContext.Provider value={[mainContextValue, setMainContextValue]}>
+    function mainComponents() {
+      return (
         <div>
           {(state.openedModals || []).map((o, i) => {
             return (
@@ -83,8 +83,16 @@ export function BaseHOC<P>(
               closeModal.current!();
             }}></WrappedComponent>
         </div>
-      </MainContext.Provider>
-    );
+      );
+    }
+    if ((config || {}).mainContextInit) {
+      return (
+        <MainContext.Provider value={[mainContextValue, setMainContextValue]}>
+          {mainComponents()}
+        </MainContext.Provider>
+      );
+    }
+    return mainComponents();
   };
   return HocComponent;
 }

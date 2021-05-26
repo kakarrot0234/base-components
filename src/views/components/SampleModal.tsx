@@ -1,9 +1,9 @@
-import * as React from "react";
 import { useMainContext } from "../../hooks/useMainContext";
 import { IBaseProps } from "../../interfaces/IBaseProps";
 import { IVeriDeposu } from "../../interfaces/IVeriDeposu";
+import { BaseHOC } from "./BaseHOC";
 
-export function SampleModal(props: Partial<IBaseProps>) {
+const SampleModalTemp = (props: Partial<IBaseProps>) => {
   const [veriDeposu, setVeriDeposu] = useMainContext<IVeriDeposu>();
   return (
     <div>
@@ -21,4 +21,5 @@ export function SampleModal(props: Partial<IBaseProps>) {
       </button>
     </div>
   );
-}
+};
+export const SampleModal = BaseHOC(SampleModalTemp);
