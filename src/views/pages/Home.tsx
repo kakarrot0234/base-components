@@ -8,7 +8,7 @@ import { DataStoreContext } from "../../contexts/DataStoreContext";
 
 export interface IHomeProps extends IBaseProps {}
 const Home: React.FunctionComponent<IHomeProps> = (props) => {
-  const [veriDeposu] = useMainContext(DataStoreContext);
+  const [mainStore] = useMainContext(DataStoreContext);
 
   return (
     <div>
@@ -44,7 +44,7 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
         }}>
         Open Modal (with context)
       </button>
-      <div>Counter: {veriDeposu.counter}</div>
+      <div>Counter: {mainStore.counter || 0}</div>
     </div>
   );
 };

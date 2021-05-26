@@ -4,13 +4,13 @@ import { IBaseProps } from "../../interfaces/IBaseProps";
 import { BaseHOC } from "./BaseHOC";
 
 const SampleModal1Temp = (props: Partial<IBaseProps>) => {
-  const [veriDeposu, setVeriDeposu] = useMainContext(DataStoreContext);
+  const [mainStore, setMainStore] = useMainContext(DataStoreContext);
   return (
     <div>
-      <div>{veriDeposu.counter || 0}</div>
+      <div>{mainStore.counter || 0}</div>
       <button
         onClick={() => {
-          setVeriDeposu((previousState) => {
+          setMainStore((previousState) => {
             return {
               ...previousState,
               counter: (previousState.counter || 0) + 1
