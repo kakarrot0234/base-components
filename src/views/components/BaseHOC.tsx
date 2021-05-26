@@ -4,24 +4,26 @@ import { Modal } from "antd";
 import { IModalOptions } from "../../interfaces/IModalOptions";
 import { useRefObject } from "../../hooks/useRefObject";
 import { IBaseProps } from "../../interfaces/IBaseProps";
-import { MainContext } from "../../contexts/MainContext";
+import { IMainContext } from "../../interfaces/IMainContext";
 
 interface IBaseState {
   openedModals?: {
     content?: any;
     modalOptions?: IModalOptions;
   }[];
+  createdContexts?: { [contextId: string]: React.Context<any> };
 }
 export function BaseHOC<P>(
   WrappedComponent: React.FunctionComponent<P & IBaseProps>,
   config?: {
-    mainContextInit?: any;
+    mainContext?: React.Context<IMainContext<any>>;
+    mainContextInit?: IMainContext<any>;
   }
 ) {
   const HocComponent = (props: React.PropsWithChildren<P> & IBaseProps) => {
     const [state, setState] = React.useState<IBaseState>({});
     const [mainContextValue, setMainContextValue] = React.useState<any>(
-      (config || {}).mainContextInit || {}
+      ((config || {}).mainContextInit || {}).store || {}
     );
 
     const openModal = useRefObject(
@@ -64,6 +66,7 @@ export function BaseHOC<P>(
         });
       }
     });
+
     function mainComponents() {
       return (
         <div>
@@ -85,11 +88,12 @@ export function BaseHOC<P>(
         </div>
       );
     }
-    if ((config || {}).mainContextInit) {
+    if (config && config.mainContext) {
       return (
-        <MainContext.Provider value={[mainContextValue, setMainContextValue]}>
+        <config.mainContext.Provider
+          value={{ store: mainContextValue, setStore: setMainContextValue }}>
           {mainComponents()}
-        </MainContext.Provider>
+        </config.mainContext.Provider>
       );
     }
     return mainComponents();
