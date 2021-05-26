@@ -1,39 +1,37 @@
 import * as React from "react";
-import { BaseHOC, IBaseProps } from "../components/BaseHOC";
+import { BaseHOC } from "../components/BaseHOC";
+import { IBaseProps } from "../../interfaces/IBaseProps";
+import { IVeriDeposu } from "../../interfaces/IVeriDeposu";
+import { SampleModal } from "../components/SampleModal";
+import { useMainContext } from "../../hooks/useMainContext";
 
 export interface IHomeProps extends IBaseProps {}
 const Home: React.FunctionComponent<IHomeProps> = (props) => {
-  function com() {
-    return (
-      <div>
-        <div>Hello</div>
-        <button
-          onClick={() => {
-            props.closeModal!();
-          }}>
-          Kapat
-        </button>
-      </div>
-    );
-  }
+  const [veriDeposu] = useMainContext<IVeriDeposu>();
 
   return (
     <div>
       <button
-        onClick={() => {
-          props.openModal!(com(), {
+        onClick={async () => {
+          await props.openModal!(<SampleModal {...props}></SampleModal>, {
             title: "Heello",
             okText: "Tamam",
             cancelText: "Vazgeç",
             onOk: async () => {
+              props.closeModal!();
+            },
+            onCancel: async () => {
               props.closeModal!();
             }
           });
         }}>
         Open Modal
       </button>
+      {veriDeposu.counter}
     </div>
   );
 };
 
-export default BaseHOC(Home);
+export default BaseHOC(Home, {
+  mainContextInit: { counter: 1 } as IVeriDeposu
+});
