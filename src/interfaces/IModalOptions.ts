@@ -5,7 +5,6 @@ export interface IModalOptions
     ModalProps,
     | "visible"
     | "confirmLoading"
-    | "forceRender"
     | "destroyOnClose"
     | "maskTransitionName"
     | "transitionName"
@@ -13,13 +12,8 @@ export interface IModalOptions
     | "prefixCls"
     | "modalRender"
     | "focusTriggerAfterClose"
-    | "onOk"
-    | "onCancel"
     | "afterClose"
+    | "forceRender"
   > {
-  isValid?(): Promise<boolean>;
-  onOk?(): Promise<void>;
-  onCancel?(): Promise<void>;
-  onClosing?(): Promise<{ cancel?: boolean }>;
   onClosed?(): Promise<void>;
 }
