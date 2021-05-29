@@ -10,6 +10,7 @@ interface IBaseState {
   openedModals?: {
     content?: any;
     modalOptions?: IModalOptions;
+    asyncResolver?: () => void;
   }[];
   createdContexts?: { [contextId: string]: React.Context<any> };
 }
@@ -25,7 +26,6 @@ export function BaseHOC<P>(
     const [mainContextValue, setMainContextValue] = React.useState<any>(
       ((config || {}).mainContextInit || {}).store || {}
     );
-
     const openModal = useRefObject(
       async (content: any, modalOptions?: IModalOptions) => {
         return new Promise<void>((resolve, reject) => {
@@ -33,15 +33,14 @@ export function BaseHOC<P>(
             const openedModal = {
               content,
               modalOptions,
-              onClosed: () => {
-                resolve();
-              }
+              asyncResolver: resolve
             } as Required<IBaseState>["openedModals"][0];
             const openedModals = [...(state.openedModals || []), openedModal];
             setState((previousState) => {
               return {
                 ...previousState,
-                openedModals
+                openedModals,
+                openModalResolve: resolve
               };
             });
           } catch (error) {
@@ -54,9 +53,6 @@ export function BaseHOC<P>(
       const openedModals = [...(state.openedModals || [])];
       if (openedModals.length > 0) {
         const openedModal = openedModals[openedModals.length - 1];
-        if ((openedModal.modalOptions || {}).onClosed) {
-          await openedModal.modalOptions!.onClosed!();
-        }
         openedModals.pop();
         setState((previousState) => {
           return {
@@ -64,6 +60,9 @@ export function BaseHOC<P>(
             openedModals
           };
         });
+        if (openedModal.asyncResolver) {
+          openedModal.asyncResolver();
+        }
       }
     });
 
@@ -84,14 +83,16 @@ export function BaseHOC<P>(
             }}
             closeModal={async () => {
               closeModal.current!();
-            }}></WrappedComponent>
+            }}
+          ></WrappedComponent>
         </div>
       );
     }
     if (config && config.mainContext) {
       return (
         <config.mainContext.Provider
-          value={{ store: mainContextValue, setStore: setMainContextValue }}>
+          value={{ store: mainContextValue, setStore: setMainContextValue }}
+        >
           {mainComponents()}
         </config.mainContext.Provider>
       );
