@@ -25,7 +25,8 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
               props.closeModal!();
             }
           });
-        }}>
+        }}
+      >
         Open Modal (without context)
       </button>
       <button
@@ -41,7 +42,8 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
               props.closeModal!();
             }
           });
-        }}>
+        }}
+      >
         Open Modal (with context)
       </button>
       <div>Counter: {mainStore.counter || 0}</div>

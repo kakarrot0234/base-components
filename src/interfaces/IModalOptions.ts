@@ -14,6 +14,4 @@ export interface IModalOptions
     | "focusTriggerAfterClose"
     | "afterClose"
     | "forceRender"
-  > {
-  onClosed?(): Promise<void>;
-}
+  > {}
