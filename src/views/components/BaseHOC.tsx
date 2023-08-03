@@ -6,14 +6,6 @@ import { useRefObject } from "../../hooks/useRefObject";
 import { IBaseProps } from "../../interfaces/IBaseProps";
 import { IMainContext } from "../../interfaces/IMainContext";
 
-interface IBaseState {
-  openedModals?: {
-    content?: any;
-    modalOptions?: IModalOptions;
-    asyncResolver?: () => void;
-  }[];
-  createdContexts?: { [contextId: string]: React.Context<any> };
-}
 export function BaseHOC<P>(
   WrappedComponent: React.FunctionComponent<P & IBaseProps>,
   config?: {
@@ -22,67 +14,72 @@ export function BaseHOC<P>(
   }
 ) {
   const HocComponent = (props: React.PropsWithChildren<P> & IBaseProps) => {
-    const [state, setState] = React.useState<IBaseState>({});
-    const [mainContextValue, setMainContextValue] = React.useState<any>(
+    const [m_OpenedModals, setOpenedModals] = React.useState<
+      {
+        content?: any;
+        modalOptions?: IModalOptions;
+        asyncResolver?: () => void;
+      }[]
+    >([]);
+    const [m_CreatedContexts, setCreatedContexts] = React.useState<{
+      [contextId: string]: React.Context<any>;
+    }>({});
+    const [m_MainContextValue, setMainContextValue] = React.useState<any>(
       ((config || {}).mainContextInit || {}).store || {}
     );
-    const openModal = useRefObject(
-      async (content: any, modalOptions?: IModalOptions) => {
-        return new Promise<void>((resolve, reject) => {
-          try {
-            const openedModal = {
-              content,
-              modalOptions,
-              asyncResolver: resolve
-            } as Required<IBaseState>["openedModals"][0];
-            const openedModals = [...(state.openedModals || []), openedModal];
-            setState((previousState) => {
-              return {
-                ...previousState,
-                openedModals,
-                openModalResolve: resolve
-              };
-            });
-          } catch (error) {
-            reject(error);
-          }
-        });
-      }
-    );
-    const closeModal = useRefObject(async () => {
-      const openedModals = [...(state.openedModals || [])];
-      if (openedModals.length > 0) {
-        const openedModal = openedModals[openedModals.length - 1];
-        openedModals.pop();
-        setState((previousState) => {
-          return {
-            ...previousState,
-            openedModals
-          };
-        });
+    const refOpenedModals = useRefObject(m_OpenedModals);
+
+    async function openModal(content: any, modalOptions?: IModalOptions) {
+      return new Promise<void>((resolve, reject) => {
+        try {
+          const openedModal = {
+            content,
+            modalOptions,
+            asyncResolver: resolve,
+          } as (typeof m_OpenedModals)[0];
+          const newOpenedModals = [
+            ...(refOpenedModals.current || []),
+            openedModal,
+          ];
+          setOpenedModals(newOpenedModals);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
+    async function closeModal() {
+      const newOpenedModals = [...(refOpenedModals.current || [])];
+      if (newOpenedModals.length > 0) {
+        const openedModal = newOpenedModals[newOpenedModals.length - 1];
+        newOpenedModals.pop();
         if (openedModal.asyncResolver) {
           openedModal.asyncResolver();
         }
+        setOpenedModals(newOpenedModals);
       }
-    });
+    }
 
     function mainComponents() {
       return (
         <div>
-          {(state.openedModals || []).map((o, i) => {
+          {m_OpenedModals.map((openedModal, index) => {
             return (
-              <Modal key={i} {...(o.modalOptions || {})} visible={true}>
-                {o.content}
+              <Modal
+                key={index}
+                {...(openedModal.modalOptions || {})}
+                visible={true}
+              >
+                {openedModal.content}
               </Modal>
             );
           })}
           <WrappedComponent
             {...props}
             openModal={async (content, modalOptions) => {
-              await openModal.current!(content, modalOptions);
+              await openModal(content, modalOptions);
             }}
             closeModal={async () => {
-              closeModal.current!();
+              await closeModal();
             }}
           ></WrappedComponent>
         </div>
@@ -91,7 +88,7 @@ export function BaseHOC<P>(
     if (config && config.mainContext) {
       return (
         <config.mainContext.Provider
-          value={{ store: mainContextValue, setStore: setMainContextValue }}
+          value={{ store: m_MainContextValue, setStore: setMainContextValue }}
         >
           {mainComponents()}
         </config.mainContext.Provider>

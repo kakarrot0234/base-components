@@ -1,10 +1,10 @@
 import * as React from "react";
-import { BaseHOC } from "../components/BaseHOC";
-import { IBaseProps } from "../../interfaces/IBaseProps";
-import { SampleModal1 } from "../components/SampleModal1";
-import { SampleModal2 } from "../components/SampleModal2";
-import { useMainContext } from "../../hooks/useMainContext";
-import { DataStoreContext } from "../../contexts/DataStoreContext";
+import { BaseHOC } from "../views/components/BaseHOC";
+import { IBaseProps } from "../interfaces/IBaseProps";
+import { SampleModal1 } from "./SampleModal1";
+import { SampleModal2 } from "./SampleModal2";
+import { useMainContext } from "../hooks/useMainContext";
+import { DataStoreContext } from "./DataStoreContext";
 
 export interface IHomeProps extends IBaseProps {}
 const Home: React.FunctionComponent<IHomeProps> = (props) => {
@@ -23,7 +23,7 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
             },
             onCancel: async () => {
               props.closeModal!();
-            }
+            },
           });
         }}
       >
@@ -40,7 +40,7 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
             },
             onCancel: async () => {
               props.closeModal!();
-            }
+            },
           });
         }}
       >
@@ -55,6 +55,6 @@ export default BaseHOC(Home, {
   mainContext: DataStoreContext,
   mainContextInit: {
     store: {},
-    setStore: () => {}
-  }
+    setStore: () => {},
+  },
 });
