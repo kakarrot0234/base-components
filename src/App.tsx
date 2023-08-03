@@ -1,6 +1,5 @@
-import "antd/dist/antd.css";
-import * as React from "react";
-import Home from "./views/pages/Home";
+import "./assets/App.css";
+import Home from "./_devTest/Home";
 
 export function App() {
   return <Home>Hello React</Home>;

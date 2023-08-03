@@ -1,7 +1,7 @@
-import { DataStoreContext } from "../../contexts/DataStoreContext";
-import { useMainContext } from "../../hooks/useMainContext";
-import { IBaseProps } from "../../interfaces/IBaseProps";
-import { BaseHOC } from "./BaseHOC";
+import { DataStoreContext } from "./DataStoreContext";
+import { useMainContext } from "../hooks/useMainContext";
+import { IBaseProps } from "../interfaces/IBaseProps";
+import { BaseHOC } from "../views/components/BaseHOC";
 
 const SampleModal1Temp = (props: Partial<IBaseProps>) => {
   const [mainStore, setMainStore] = useMainContext(DataStoreContext);
@@ -13,10 +13,11 @@ const SampleModal1Temp = (props: Partial<IBaseProps>) => {
           setMainStore((previousState) => {
             return {
               ...previousState,
-              counter: (previousState.counter || 0) + 1
+              counter: (previousState.counter || 0) + 1,
             };
           });
-        }}>
+        }}
+      >
         Add + 1
       </button>
     </div>
