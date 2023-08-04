@@ -1,0 +1,25 @@
+.root-auto-complete-input {
+  position: relative;
+}
+.root-auto-complete-input .rule-auto-complete-input {
+  width: 100%;
+}
+.root-auto-complete-input .container-select {
+  position: absolute;
+  width: fit-content;
+  min-width: 200px;
+  top: 100%;
+  left: 0px;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+}
+.root-auto-complete-input .container-select.non-visible {
+  display: none;
+}
+.root-auto-complete-input .container-select-item {
+  border-bottom: 1px solid black;
+}
+.root-auto-complete-input .container-select-item:hover {
+  background-color: bisque;
+}
