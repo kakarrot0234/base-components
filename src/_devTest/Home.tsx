@@ -5,6 +5,7 @@ import { SampleModal1 } from "./SampleModal1";
 import { SampleModal2 } from "./SampleModal2";
 import { useMainContext } from "../hooks/useMainContext";
 import { DataStoreContext } from "./DataStoreContext";
+import { AutoCompleteInput } from "../views/components/AutoCompleteInput";
 
 export interface IHomeProps extends IBaseProps {}
 const Home: React.FunctionComponent<IHomeProps> = (props) => {
@@ -47,6 +48,25 @@ const Home: React.FunctionComponent<IHomeProps> = (props) => {
         Open Modal (with context)
       </button>
       <div>Counter: {mainStore.counter || 0}</div>
+      <div>
+        <AutoCompleteInput
+          minCharacterCountForSearch={1}
+          onBeginSearch={async () => {
+            return [
+              {
+                searchedText: "test",
+                foundText: "Test 1",
+                foundTextDetail: "Test 1 detail",
+                foundTextMatchOrder: 1,
+                foundTextMatches: [
+                  { from: 0, to: 1 },
+                  { from: 3, to: 5 },
+                ],
+              },
+            ];
+          }}
+        ></AutoCompleteInput>
+      </div>
     </div>
   );
 };
