@@ -51,6 +51,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
       <div>
         <AutoCompleteInput
           minCharacterCountForSearch={1}
+          searchForOnlyLastText={true}
           onBeginSearch={async () => {
             return [
               {
