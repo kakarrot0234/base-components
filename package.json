@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-dev": "rimraf build && webpack --config webpack/webpack.config.js --env env=dev",
     "build-prod": "rimraf build && webpack --config webpack/webpack.config.js --env env=prod",
-    "start": "webpack serve --config webpack/webpack.config.js --env env=dev"
+    "start": "webpack serve --config webpack/webpack.config.js --env env=dev",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -42,7 +43,10 @@
     "eslint-plugin-react": "^7.33.2",
     "fork-ts-checker-webpack-plugin": "^8.0.0",
     "html-webpack-plugin": "^5.5.3",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
     "mini-css-extract-plugin": "^2.7.6",
+    "prettier": "3.0.2",
     "rimraf": "^5.0.1",
     "style-loader": "^3.3.3",
     "ts-node": "^10.9.1",
@@ -54,6 +58,7 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
+    "antd": "^5.8.4",
     "axios": "^1.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -64,5 +69,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
 }

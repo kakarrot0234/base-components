@@ -16,7 +16,7 @@
         "forceConsistentCasingInFileNames": true
     },
     "include": [
-        "src/**/*"
+        "src/**/*", "src/_devTest",
     ],
     "exclude": [
         "node_modules"
