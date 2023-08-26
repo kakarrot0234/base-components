@@ -5,7 +5,7 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 
 module.exports = {
     mode: "development",
-    entry: path.resolve(__dirname, "../_devTest/index.tsx"),
+    entry: path.resolve(__dirname, "../src/_devTest/index.tsx"),
     module: {
         rules: [
             {
@@ -29,7 +29,7 @@ module.exports = {
             async: false,
         }),
         new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, "../src/app/index.html")
+            template: path.resolve(__dirname, "../src/_devTest/index.html")
         }),
         new ReactRefreshWebpackPlugin(),
     ],
