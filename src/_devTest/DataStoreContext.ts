@@ -4,5 +4,5 @@ import { IDataStore } from "../interfaces/IDataStore";
 
 export const DataStoreContext = React.createContext<IMainContext<IDataStore>>({
   store: {},
-  setStore: () => {}
+  setStore: () => {},
 });
