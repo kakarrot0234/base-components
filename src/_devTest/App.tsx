@@ -9,7 +9,17 @@ import { AutoCompleteInput } from "../views/components/AutoCompleteInput";
 
 export interface IAppProps extends IBaseProps {}
 const App: React.FunctionComponent<IAppProps> = (props) => {
-  const [mainStore] = useMainContext(DataStoreContext);
+  const [m_MainStore] = useMainContext(DataStoreContext);
+  const [m_AllTextForSearch] = React.useState<
+    {
+      text?: string;
+      detail?: string;
+    }[]
+  >([
+    { text: "Ahmet", detail: "Baba" },
+    { text: "Fatma", detail: "Anne" },
+    { text: "Melis", detail: "Melek" },
+  ]);
 
   return (
     <div>
@@ -47,24 +57,50 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
       >
         Open Modal (with context)
       </button>
-      <div>Counter: {mainStore.counter || 0}</div>
+      <div>Counter: {m_MainStore.counter || 0}</div>
       <div>
         <AutoCompleteInput
           minCharacterCountForSearch={1}
           searchForOnlyLastText={true}
-          onBeginSearch={async () => {
-            return [
-              {
-                searchedText: "test",
-                foundText: "Test 1",
-                foundTextDetail: "Test 1 detail",
-                foundTextMatchOrder: 1,
-                foundTextMatches: [
-                  { from: 0, to: 1 },
-                  { from: 3, to: 5 },
-                ],
-              },
-            ];
+          onBeginSearch={async (allText, lastText) => {
+            const searchResults: {
+              searchedText?: string | undefined;
+              foundText?: string | undefined;
+              foundTextDetail?: string | undefined;
+              foundTextMatchOrder?: number | undefined;
+              foundTextMatches?:
+                | {
+                    from?: number;
+                    to?: number;
+                  }[]
+                | undefined;
+            }[] = [];
+            for (const textForSearch of m_AllTextForSearch) {
+              const regex = new RegExp(
+                (lastText || "")
+                  .split("")
+                  .map((char) => `${char}?`)
+                  .join(""),
+                "i",
+              );
+              const regexMatch = regex.exec(textForSearch.text || "");
+              if (regexMatch && regexMatch[0].length > 0) {
+                searchResults.push({
+                  searchedText: lastText,
+                  foundText: textForSearch.text,
+                  foundTextDetail: textForSearch.detail,
+                  foundTextMatchOrder:
+                    (textForSearch.text || "").length - regexMatch[0].length,
+                  foundTextMatches: [
+                    {
+                      from: regexMatch.index,
+                      to: regexMatch.index + regexMatch[0].length - 1,
+                    },
+                  ],
+                });
+              }
+            }
+            return searchResults;
           }}
         ></AutoCompleteInput>
       </div>
