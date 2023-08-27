@@ -5,3 +5,4 @@ export * from "./interfaces/IBaseProps";
 export * from "./hooks/useMainContext";
 export * from "./hooks/useRefObject";
 export * from "./views/components/BaseHOC";
+export * from "./views/components/AutoCompleteInput";
