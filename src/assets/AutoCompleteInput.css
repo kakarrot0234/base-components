@@ -20,6 +20,6 @@
 .root-auto-complete-input .container-select-item {
   border-bottom: 1px solid black;
 }
-.root-auto-complete-input .container-select-item:hover {
+.root-auto-complete-input .container-select-item.hovered {
   background-color: bisque;
 }
