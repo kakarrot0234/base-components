@@ -51,6 +51,16 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
       return textMetrics;
     }
   }
+  function onSelectFoundText(foundItem: (typeof m_SearchResults)[0]) {
+    if (refAutoCompleteInput.current) {
+      refAutoCompleteInput.current.setRangeText(
+        foundItem.foundText || "",
+        refAutoCompleteInput.current.selectionStart || 0,
+        refAutoCompleteInput.current.selectionStart || 0,
+        "preserve",
+      );
+    }
+  }
   function selectItem(
     item: Awaited<
       ReturnType<Required<IAutoCompleteInputProps>["onBeginSearch"]>
@@ -62,7 +72,7 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
       if ((item.foundTextMatches[0].from || 0) > 0) {
         compSelectItem.push(
           <span key={`${key++}`}>
-            {(item.searchedText || "").substring(
+            {(item.foundText || "").substring(
               0,
               item.foundTextMatches[0].from || 0,
             )}
@@ -73,7 +83,7 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
         compSelectItem.push(
           <span key={`${key++}`}>
             <b>
-              {(item.searchedText || "").substring(
+              {(item.foundText || "").substring(
                 item.foundTextMatches[i].from || 0,
                 (item.foundTextMatches[i].to || 0) + 1,
               )}
@@ -83,11 +93,11 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
       }
       if (
         (item.foundTextMatches[item.foundTextMatches.length - 1].to || 0) <
-        (item.searchedText || "").length - 1
+        (item.foundText || "").length - 1
       ) {
         compSelectItem.push(
           <span key={`${key++}`}>
-            {(item.searchedText || "").substring(
+            {(item.foundText || "").substring(
               (item.foundTextMatches[item.foundTextMatches.length - 1].to ||
                 0) + 1,
             )}
@@ -117,8 +127,8 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
                   setSearchResults(
                     searchResult.sort((previous, next) => {
                       return (
-                        (next.foundTextMatchOrder || 0) -
-                        (previous.foundTextMatchOrder || 0)
+                        (previous.foundTextMatchOrder || 0) -
+                        (next.foundTextMatchOrder || 0)
                       );
                     }),
                   );
@@ -153,7 +163,11 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
       >
         {m_SearchResults.map((listItem, index) => {
           return (
-            <div className="container-select-item" key={index.toString()}>
+            <div
+              className="container-select-item"
+              key={index.toString()}
+              onClick={() => onSelectFoundText(listItem)}
+            >
               <label>{selectItem(listItem)}</label>
             </div>
           );

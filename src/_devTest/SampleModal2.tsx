@@ -6,7 +6,7 @@ import { BaseHOC } from "../views/components/BaseHOC";
 
 const SampleModal2Temp = (props: Partial<IBaseProps>) => {
   const [selfDataStore, setSelfDataStore] = useMainContext(
-    AnotherDataStoreContext
+    AnotherDataStoreContext,
   );
   const [mainDataStore, setMainDataStore] = useMainContext(DataStoreContext);
   return (

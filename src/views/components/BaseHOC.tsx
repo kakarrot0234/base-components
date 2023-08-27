@@ -11,7 +11,7 @@ export function BaseHOC<P>(
   config?: {
     mainContext?: React.Context<IMainContext<any>>;
     mainContextInit?: IMainContext<any>;
-  }
+  },
 ) {
   const HocComponent = (props: React.PropsWithChildren<P> & IBaseProps) => {
     const [m_OpenedModals, setOpenedModals] = React.useState<
@@ -25,7 +25,7 @@ export function BaseHOC<P>(
       [contextId: string]: React.Context<any>;
     }>({});
     const [m_MainContextValue, setMainContextValue] = React.useState<any>(
-      ((config || {}).mainContextInit || {}).store || {}
+      ((config || {}).mainContextInit || {}).store || {},
     );
     const refOpenedModals = useRefObject(m_OpenedModals);
 
