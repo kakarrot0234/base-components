@@ -1,8 +1,8 @@
 import { DataStoreContext } from "./DataStoreContext";
 import { AnotherDataStoreContext } from "./AnotherDataStoreContext";
-import { useMainContext } from "../hooks/useMainContext";
-import { IBaseProps } from "../interfaces/IBaseProps";
-import { BaseHOC } from "../views/components/BaseHOC";
+import { useMainContext } from "../../hooks/useMainContext";
+import { IBaseProps } from "../../interfaces/IBaseProps";
+import { BaseHOC } from "../../views/components/BaseHOC";
 
 const SampleModal2Temp = (props: Partial<IBaseProps>) => {
   const [selfDataStore, setSelfDataStore] = useMainContext(

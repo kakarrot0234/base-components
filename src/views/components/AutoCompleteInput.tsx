@@ -31,6 +31,7 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
   const [m_SearchResults, setSearchResults] = React.useState<
     Awaited<ReturnType<Required<IAutoCompleteInputProps>["onBeginSearch"]>>
   >([]);
+  const [m_HoveredItemIndex, setHoveredItemIndex] = React.useState<number>();
 
   // changing of refSelectContainer.current.style.left
   React.useEffect(() => {
@@ -40,6 +41,10 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
       }px`;
     }
   }, [m_CarretPositionMatrics]);
+  // changing of m_HoveredItemIndex when m_SelectVisible changes
+  React.useEffect(() => {
+    setHoveredItemIndex(m_SelectVisible ? 0 : undefined);
+  }, [m_SelectVisible]);
 
   function getTextMetrics(text: string) {
     if (m_CanvasContext && refAutoCompleteInput.current) {
@@ -54,9 +59,10 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
   function onSelectFoundText(foundItem: (typeof m_SearchResults)[0]) {
     if (refAutoCompleteInput.current) {
       refAutoCompleteInput.current.setRangeText(
-        foundItem.foundText || "",
+        `${foundItem.foundText || ""} `,
         refAutoCompleteInput.current.selectionStart || 0,
-        refAutoCompleteInput.current.selectionStart || 0,
+        (refAutoCompleteInput.current.selectionStart || 0) +
+          (foundItem.foundText?.length || 0),
         "preserve",
       );
     }
@@ -156,6 +162,24 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
             setSelectVisible(false);
           }
         }}
+        onKeyDown={(params) => {
+          if (params.key === "ArrowDown") {
+            if ((m_HoveredItemIndex || 0) < m_SearchResults.length) {
+              setHoveredItemIndex((previousState) => (previousState || 0) + 1);
+            }
+          } else if (params.key === "ArrowUp") {
+            if ((m_HoveredItemIndex || 0) > 0) {
+              setHoveredItemIndex((previousState) => (previousState || 0) - 1);
+            }
+          } else if (params.key === "Enter") {
+            if ((m_HoveredItemIndex || 0) >= 0) {
+              const selectedFoundItem =
+                m_SearchResults[m_HoveredItemIndex || 0];
+              onSelectFoundText(selectedFoundItem);
+              setSelectVisible(false);
+            }
+          }
+        }}
       ></input>
       <div
         ref={refSelectContainer}
@@ -164,9 +188,14 @@ export function AutoCompleteInput(props: IAutoCompleteInputProps) {
         {m_SearchResults.map((listItem, index) => {
           return (
             <div
-              className="container-select-item"
+              className={`container-select-item ${
+                m_HoveredItemIndex === index ? "hovered" : ""
+              }`}
               key={index.toString()}
-              onClick={() => onSelectFoundText(listItem)}
+              onClick={() => {
+                onSelectFoundText(listItem);
+                setSelectVisible(false);
+              }}
             >
               <label>{selectItem(listItem)}</label>
             </div>
